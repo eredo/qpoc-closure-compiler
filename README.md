@@ -1,3 +1,5 @@
+# UNDER DEVELOPMENT
+
 # grunt-qpoc-closure-compiler
 
 > Extended closure compiler plugin with module support.
@@ -107,7 +109,7 @@ Default value: environment $CLOSURE_COMPILER
 
 Description following...
 
-** To be continued... Please look at the example above **
+**To be continued... Please look at the example above**
 
 ## Release History
 _(Nothing yet)_

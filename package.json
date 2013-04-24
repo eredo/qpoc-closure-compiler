@@ -2,7 +2,7 @@
   "name": "grunt-qpoc-closure-compiler",
   "description": "Extended closure compiler plugin with module support.",
   "version": "0.1.0",
-  "homepage": "https://github.com/Eric/qpoc-closure-compiler",
+  "homepage": "https://github.com/eredo/qpoc-closure-compiler",
   "author": {
     "name": "Eric Schneller",
     "email": "schneller@secureware.de",
@@ -10,15 +10,15 @@
   },
   "repository": {
     "type": "git",
-    "url": "git://github.com/Eric/qpoc-closure-compiler.git"
+    "url": "git://github.com/eredo/qpoc-closure-compiler.git"
   },
   "bugs": {
-    "url": "https://github.com/Eric/qpoc-closure-compiler/issues"
+    "url": "https://github.com/eredo/qpoc-closure-compiler/issues"
   },
   "licenses": [
     {
       "type": "MIT",
-      "url": "https://github.com/Eric/qpoc-closure-compiler/blob/master/LICENSE-MIT"
+      "url": "https://github.com/eredo/qpoc-closure-compiler/blob/master/LICENSE-MIT"
     }
   ],
   "main": "Gruntfile.js",
