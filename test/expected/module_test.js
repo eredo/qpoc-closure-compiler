@@ -1,0 +1,1 @@
+function P(){}P.prototype.b="Hallo";function Q(){O.call(this);this.f=new P;this.f.b="Muha"}n(Q,O);Q.prototype.b=[];var R=["blub"],S=e;!(R[0]in S)&&S.execScript&&S.execScript("var "+R[0]);for(var T;R.length&&(T=R.shift());){var U;if(U=!R.length)U=void 0!==Q;U?S[T]=Q:S=S[T]?S[T]:S[T]={}};
