@@ -17,6 +17,7 @@ module.exports = (grunt) ->
       workspaces: [],
       includeClosureLibrary: true,
       modules: [],
+      defines: {},
       level: {
         advanced: false,
         simple: true
@@ -27,15 +28,18 @@ module.exports = (grunt) ->
       sourceMaps: false
     })
 
+    grunt.log.debug 'Start closure compiler export.'
+    grunt.log.debug JSON.stringify(options, null, 2)
+
     grunt.verbose.writeflags options, 'Options';
 
     # Check if required options are set
     if typeof options.closureCompiler == 'undefined'
-      throw new Error 'Closure Compiler path not set. Use Configuration or' +
+      grunt.log.error 'Closure Compiler path not set. Use Configuration or' +
         'set an environment variable: CLOSURE_COMPILER'
 
     if typeof options.closureLibrary == 'undefined'
-      throw new Error 'Closure Library path not set. Use Configuration (closureLibrary) ' +
+      grunt.log.error 'Closure Library path not set. Use Configuration (closureLibrary) ' +
         'or set an environment variable: CLOSURE_LIBRARY'
 
 
@@ -57,6 +61,7 @@ module.exports = (grunt) ->
     # Output mode for working with the list
     execCalcDeps.push '--output_mode list'
 
+    grunt.log.debug 'Run DepsCalculator script: ' + execCalcDeps.join(' ')
     exec execCalcDeps.join(' '), (err, stdout, stderr) ->
       if err || stderr.match(/Error/)
         grunt.log.error err || stderr
@@ -64,6 +69,8 @@ module.exports = (grunt) ->
         done(success)
       else
         lines = stdout.split '\n'
+
+        grunt.log.debug 'Dependencies calculated: ' + lines.join(' ')
 
         # Build the module map by checking each line of the result
         # and add those to the modules array
@@ -89,12 +96,18 @@ module.exports = (grunt) ->
 
         if options.level.advanced
           execCompiler.push '--compilation_level ADVANCED_OPTIMIZATIONS'
+        else if options.level.simple
+          execCompiler.push '--compilation_level SIMPLE_OPTIMIZATIONS'
 
         Array.prototype.push.apply execCompiler, modMap
         execCompiler.push '--module_output_path_prefix ' + path.join(options.outputDir, options.modulePrefix)
 
         # Add all JS files
         execCompiler.push '--js ' + jsFile for jsFile in lines when jsFile != ''
+
+        # Add all defines
+        for defKey, defVal of options.defines
+          execCompiler.push "--define \"#{ defKey }=#{ defVal }\""
 
         if options.sourceMaps
           execCompiler.push "--create_source_map #{ options.outputDir }/module.js.map"

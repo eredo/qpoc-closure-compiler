@@ -21,6 +21,7 @@
         workspaces: [],
         includeClosureLibrary: true,
         modules: [],
+        defines: {},
         level: {
           advanced: false,
           simple: true
@@ -30,12 +31,14 @@
         modulePrefix: '',
         sourceMaps: false
       });
+      grunt.log.debug('Start closure compiler export.');
+      grunt.log.debug(JSON.stringify(options, null, 2));
       grunt.verbose.writeflags(options, 'Options');
       if (typeof options.closureCompiler === 'undefined') {
-        throw new Error('Closure Compiler path not set. Use Configuration or' + 'set an environment variable: CLOSURE_COMPILER');
+        grunt.log.error('Closure Compiler path not set. Use Configuration or' + 'set an environment variable: CLOSURE_COMPILER');
       }
       if (typeof options.closureLibrary === 'undefined') {
-        throw new Error('Closure Library path not set. Use Configuration (closureLibrary) ' + 'or set an environment variable: CLOSURE_LIBRARY');
+        grunt.log.error('Closure Library path not set. Use Configuration (closureLibrary) ' + 'or set an environment variable: CLOSURE_LIBRARY');
       }
       progCalcDeps = path.join(options.closureLibrary, 'closure/bin/calcdeps.py');
       execCalcDeps = [progCalcDeps];
@@ -55,14 +58,16 @@
         execCalcDeps.push('--input ' + mod.path);
       }
       execCalcDeps.push('--output_mode list');
+      grunt.log.debug('Run DepsCalculator script: ' + execCalcDeps.join(' '));
       return exec(execCalcDeps.join(' '), function(err, stdout, stderr) {
-        var currentIndex, execCompiler, files, jsFile, lastIndex, lines, modCommand, modIndex, modMap, modPath, _k, _l, _len2, _len3, _ref2;
+        var currentIndex, defKey, defVal, execCompiler, files, jsFile, lastIndex, lines, modCommand, modIndex, modMap, modPath, _k, _l, _len2, _len3, _ref2, _ref3;
         if (err || stderr.match(/Error/)) {
           grunt.log.error(err || stderr);
           success = false;
           return done(success);
         } else {
           lines = stdout.split('\n');
+          grunt.log.debug('Dependencies calculated: ' + lines.join(' '));
           modMap = [];
           lastIndex = 0;
           files = 0;
@@ -83,6 +88,8 @@
           execCompiler = [options.javaPath, '-jar', options.closureCompiler];
           if (options.level.advanced) {
             execCompiler.push('--compilation_level ADVANCED_OPTIMIZATIONS');
+          } else if (options.level.simple) {
+            execCompiler.push('--compilation_level SIMPLE_OPTIMIZATIONS');
           }
           Array.prototype.push.apply(execCompiler, modMap);
           execCompiler.push('--module_output_path_prefix ' + path.join(options.outputDir, options.modulePrefix));
@@ -91,6 +98,11 @@
             if (jsFile !== '') {
               execCompiler.push('--js ' + jsFile);
             }
+          }
+          _ref3 = options.defines;
+          for (defKey in _ref3) {
+            defVal = _ref3[defKey];
+            execCompiler.push("--define \"" + defKey + "=" + defVal + "\"");
           }
           if (options.sourceMaps) {
             execCompiler.push("--create_source_map " + options.outputDir + "/module.js.map");
