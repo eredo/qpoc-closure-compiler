@@ -2,3 +2,4 @@
 node_modules
 npm-debug.log
 tmp
+tasks/qpoc_grunt_compiler.js

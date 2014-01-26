@@ -25,7 +25,9 @@ module.exports = (grunt) ->
       prettyPrint: true
       outputDir: './tmp/'
       modulePrefix: '',
-      sourceMaps: false
+      sourceMaps: false,
+      externs: [],
+      nameMapFiles: false
     })
 
     grunt.log.debug 'Start closure compiler export.'
@@ -115,6 +117,12 @@ module.exports = (grunt) ->
 
         if options.prettyPrint
           execCompiler.push '--formatting pretty_print'
+
+        # add externs
+        options.externs.forEach((ex) => execCompiler.push("--externs #{ex}"))
+
+        if options.nameMapFiles
+          execCompiler.push('--create_name_map_files')
 
         grunt.log.debug execCompiler.join('\n')
 

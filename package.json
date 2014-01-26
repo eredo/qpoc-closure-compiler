@@ -1,7 +1,7 @@
 {
   "name": "grunt-qpoc-closure-compiler",
   "description": "Extended closure compiler plugin with module support.",
-  "version": "0.1.1",
+  "version": "0.1.2",
   "homepage": "https://github.com/eredo/qpoc-closure-compiler",
   "author": {
     "name": "Eric Schneller",
